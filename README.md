@@ -22,13 +22,17 @@ How does it works ?
   - We can add user, delete user and update user.    
   - User information wil be stored in User Database.
 
-- Hotel Service
-  - This 
-    
+- Hotel Service http://localhost:8082/swagger-ui/index.html
+  - This service will take care about the hotel and room informations
+  - You can get the hotel with rooms inside it.
+  - We cn have multiple rooms in hotel.
+  - We can update the room status.
+  - We can update the room informtaion.
 
-- Hotel booking microservice helps for room booking from specific hotel.
-- http://localhost:8082/swagger-ui/index.html#/ this url will help you get the full information about the apis and model.
-- If the room is already booked it will throw error and inform user that room is already booked and you can not book the hotel this time.
-- You can get all the rooms booked from userid
-- You can cancel the booking
-- You can upate the booking
+- Booking Service http://localhost:8083/swagger-ui/index.html
+  - This service will take care about the rooms booking.
+  - For same user we can book multiple rooms at a same time.
+  - We can cancel the bookking by giving booking id.
+  - We can get all the booking of specific user.
+  - We can get specific booking details - check-in/check-out and booking date.
+    
