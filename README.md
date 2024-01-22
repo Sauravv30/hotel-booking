@@ -35,4 +35,19 @@ How does it works ?
   - We can cancel the bookking by giving booking id.
   - We can get all the booking of specific user.
   - We can get specific booking details - check-in/check-out and booking date.
+ 
+# Installation Steps:
+  - All microservices except gateway the controller and models are creating from <swagger>.yml file in resources
+  - mvn clean install must run to build the controllers
+
+# Short Falls
+- This app is syncronized block the booking process everytime - We can make it reactive
+- No live information - Actuator can we used
+- No docker files and deployment process - We can create docker file and user kuberneter
+- App gateway - no authorization and not robust- AWS Application load balancer can be used
+- No logs - Customized can we added logstash, kibana can we used.
+- No authorization at intranet microservice level - Due to deployment process is not there but we can add firewall rules
+- Basic JWT authentication is used - OAuth or Active directory can be used.
+- Resilience is not used - Spring boot resilience4j can be used.
+- No Junits and code level better docs
     
