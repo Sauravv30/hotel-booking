@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  title: HRS Hotels Booking
+  description: |-
+    This is a microservice application that used to do create, delete, update and get request for users
+
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: sauravv30@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://localhost:8080/api/v1
+tags:
+  - name: booking
+    description: Hotel api
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+
+paths:
+  /booking/{bookingId}:
+    get:
+      tags:
+        - booking
+      summary: Get hotel booking by id
+      description: Get hotel booking by id
+      operationId: getBookingById
+      parameters:
+        - name: bookingId
+          in: path
+          description: Booking id to get results
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+        '405':
+          description: Validation exception
+  /booking/user/{userId}:
+    get:
+      tags:
+        - booking
+      summary: Get hotel booking by id
+      description: Get hotel booking by id
+      operationId: getBookingByUserId
+      parameters:
+        - name: userId
+          in: path
+          description: Booking detais for specific user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+        '405':
+          description: Validation exception
+  /booking/create/{userId}:
+    post:
+      tags:
+        - booking
+      summary: Crate user booking
+      description: Create user booking
+      operationId: createUserBooking
+      parameters:
+        - name: userId
+          in: path
+          description: Booking detais for specific user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update room details
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+        '405':
+          description: Validation exception
+
+  /booking/cancel/{bookingId}:
+    delete:
+      tags:
+        - booking
+      summary: Cancel hotel booking.
+      description: Cancel hotel booking.
+      operationId: cancelHotelBooking
+      parameters:
+        - name: bookingId
+          in: path
+          description: Id to cancel booking
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delete'
+
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Room not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+
+  /booking/update/{bookingId}:
+    put:
+      tags:
+        - booking
+      summary: Update booking details.
+      description: Update booking details.
+      operationId: updateBookingDetails
+      parameters:
+        - name: bookingId
+          in: path
+          description: Id to update booking
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update room details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Room not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+
+components:
+  schemas:
+    Booking:
+      required:
+        - roomId
+
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        roomId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        bookingStatus:
+          type: string
+          description: Current booking status
+          enum:
+            - CONFIRM
+            - CANCELLED
+        checkIdDate:
+          type: string
+          format: date
+        checkOutDate:
+          type: string
+          format: date
+        bookingDate:
+          type: string
+          format: date
+
+    Delete:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        message:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        errorMessage:
+          type: string
+    Hotel:
+      required:
+        - name
+        - location
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+        location:
+          type: string
+
+    Room:
+      required:
+        - number
+        - booked
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        number:
+          type: string
+        booked:
+          type: boolean
+          default: false
+        hotel:
+          $ref: '#/components/schemas/Hotel'
+        roomType:
+          type: string
+          description: Available room type
+          enum:
+            - SINGLE
+            - DOUBLE
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
