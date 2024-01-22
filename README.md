@@ -1,4 +1,4 @@
-
+# HOTEL BOOKING
 The overall idea about the hotel booking app is.
 - We have multiple microservice those are working to achieve the booking because we ave to handle mulitple millions of request in hour. We can create multiple bookings at the same time.
 - While creating booking you can provide multiple entries at the same time for same user.
