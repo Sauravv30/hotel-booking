@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,13 +62,19 @@ public class BookingService {
      * @return the list
      */
     public List<Booking> createBooking(Long userId, List<Booking> booking){
+        List<BookingEntity> persistedEntities = new ArrayList<>();
         List<BookingEntity> listOfBooking = booking.stream().map(singleBooking -> {
             singleBooking.setUserId(userId);
+            singleBooking.setBookingDate(LocalDate.now());
             return singleBooking;
         }).map(bookingMapper::modelToEntity).collect(Collectors.toList());
-        List<BookingEntity> persistedEntities = bookingRepository.saveAll(listOfBooking);
-        //same date booking
-        persistedEntities.stream().forEach(entity -> hotelClient.requestHotelBooking(entity.getRoomId(),"Booking"));
+        try {
+        persistedEntities = bookingRepository.saveAll(listOfBooking);
+       // persistedEntities.stream().forEach(entity -> hotelClient.requestHotelBooking(entity.getRoomId(), "Booking"));
+        }
+        catch (Exception e){
+            throw new BookingCustomException("Room is already booked by user");
+        }
         return persistedEntities.stream().map(bookingMapper::entityToModel).collect(Collectors.toList());
     }
 

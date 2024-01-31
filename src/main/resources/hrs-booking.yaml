@@ -220,7 +220,7 @@ components:
           enum:
             - CONFIRM
             - CANCELLED
-        checkIdDate:
+        checkInDate:
           type: string
           format: date
         checkOutDate:

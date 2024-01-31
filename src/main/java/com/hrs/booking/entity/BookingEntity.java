@@ -13,8 +13,12 @@ import java.time.LocalDate;
  * The type Booking entity.
  */
 @Entity
+@Table(name = "BookingEntity", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_bookingentity_roomid", columnNames = {"roomId", "userId","checkInDate","checkOutDate"})
+})
 @Getter
 @Setter
+
 public class BookingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hotel-sequence")
@@ -27,7 +31,7 @@ public class BookingEntity {
     private Long userId;
 
     private BookingStatus bookingStatus;
-    private LocalDate checkIdDate;
+    private LocalDate checkInDate;
     private LocalDate checkOutDate;
     @UpdateTimestamp
     private LocalDate bookingDate;
