@@ -11,7 +11,6 @@ import com.hrs.booking.model.Room;
 import com.hrs.booking.repository.BookingRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,7 +39,7 @@ public class BookingService {
     }
 
     private BookingEntity getBookingFromId(long id){
-        return bookingRepository.findById(id).orElseThrow(()->new NotFoundCustomException("Did not find booking for this id"+id));
+        return bookingRepository.findById(id).orElseThrow(()->new NotFoundCustomException("Did not find booking for this id "+id));
     }
 
     /**
@@ -90,7 +89,13 @@ public class BookingService {
         BookingEntity newEntity = bookingMapper.modelToEntity(booking);
         newEntity.setId(persistedEntity.getId());
         // room service update
-        return bookingMapper.entityToModel(bookingRepository.save(newEntity));
+        try{
+           return bookingMapper.entityToModel(bookingRepository.save(newEntity));
+        }
+        catch (Exception e){
+            throw new BookingCustomException("Error while booking update ",e);
+        }
+
     }
 
     /**
@@ -101,12 +106,14 @@ public class BookingService {
      */
     @Transactional
     public Booking cancelBooking(long bookingId){
+
         BookingEntity persistedEntity = getBookingFromId(bookingId);
         persistedEntity.setBookingStatus(BookingStatus.CANCELLED);
-        Room roomDetails = hotelClient.requestHotelBooking(persistedEntity.getRoomId(),"Cancel");
-        if (roomDetails.getBooked()) {
-            throw new BookingCustomException("Room status not updated");
-        }
+        persistedEntity.setBookingDate(LocalDate.now());
+//        Room roomDetails = hotelClient.requestHotelBooking(persistedEntity.getRoomId(),"Cancel");
+//        if (roomDetails.getBooked()) {
+//            throw new BookingCustomException("Room status not updated");
+//        }
         //room service call to make the room available
         return bookingMapper.entityToModel(bookingRepository.save(persistedEntity));
     }
